@@ -4,8 +4,8 @@ import axiosInstance from "../../Helpers/axiosInstance"
 
 const initialState = {
     isLoggedIn: localStorage.getItem('isLoggedIn') || false,
-    role: localStorage.getItem('role') || "",
-    data: localStorage.getItem('data') || {}
+    role: localStorage.getItem("role") || "",
+    data: localStorage.getItem("data") || {}
 };
 
 export const createAccount = createAsyncThunk("/auth/signup", async(data) => {
@@ -45,7 +45,7 @@ export const login = createAsyncThunk("/auth/login", async(data) => {
 
 export const logout = createAsyncThunk("/auth/logout", async () => {
     try {
-        const res = axiosInstance.post("user/logout");
+        const res = axiosInstance.get("user/logout");
         toast.promise(res,{
             loading: "Wait! logout in progress...",
             success: (data) => {
@@ -54,15 +54,16 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
             error: "Failed to logout"
         });
 
-        return (await res).data;
+        return await res;
     } catch (error) {
+        console.log(error);
         toast.error(error?.response?.data?.message);
     }
 })
 
 
 const authSlice = createSlice({
-      name: 'auth',
+      name: "auth",
       initialState,
       reducers: {},
       extraReducers: (builder) => {
@@ -70,10 +71,10 @@ const authSlice = createSlice({
         .addCase(login.fulfilled, (state, action) => {
             localStorage.setItem("data", JSON.stringify(action?.payload?.user));
             localStorage.setItem("isLoggedIn", true);
-            localStorage.setItem("role", action?.payload?.data?.user?.role);
+            localStorage.setItem("role", action?.payload?.user?.role);
             state.isLoggedIn = true;
-            state.role = action?.payload?.data?.user?.role;
-            state.data = action?.payload?.data?.user;
+            state.data = action?.payload?.user;
+            state.role = action?.payload?.user?.role;
         })
         .addCase(logout.fulfilled, (state) => {
             localStorage.clear();
