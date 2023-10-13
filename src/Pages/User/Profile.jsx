@@ -18,8 +18,9 @@ function Profile() {
         await dispatch(cancelCourseBundle());
         await dispatch(getUserData());
         toast.success("Cancellation completed!");
-        navigate("/");
+       navigate("/");
     }
+    
 
     return(
         <HomeLayout>
